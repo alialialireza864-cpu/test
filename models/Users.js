@@ -7,7 +7,7 @@ const userModel = mongoose.model("users", {
     minLength:3,
     maxLength:15
   },
-  username:{
+  userName:{
     type:String,
     required:true,
     minLength:3,
