@@ -1,5 +1,8 @@
 const express = require("express");
 const app = express(); //server
+app.use(express.json());
+const userModel = require("./models/Users")
+require("./config/db")
 const products = [
    {id:1,name:'mouse',price:200000},
    {id:2,name:'keyboard',price:700000},
@@ -19,13 +22,25 @@ app.get("/product/:id" , (req,res)=>{
         res.send("product not found")
     }
 })
+
 app.get('/about',(req,res)=>{
     res.send('about page:)')
 })
+app.post('/users', async (req, res) => {
+  const {name, username, email} = req.body;
+  if (!name?.trim() || !username?.trim() || !email?.trim()) {
+    return res.status(422).json({message: "invalid info !"});
+  }
+  try {
+    const user = await userModel.create({name, username, email});
+    res.status(201).json({message: "user created successfully!", user});
+  } catch (err) {
+    res.status(500).json({message: "error creating user", error: err.message});
+  }
+});
 app.get('/contact',(req,res)=>{
     res.send('contact page:)')
 })
-const PORT = process.env.PORT || 3000;
-app.listen(process.env.PORT, () => {
+app.listen(3000, () => {
   console.log("server is running!");
 });
